@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const ModalForm = ({ show, handleClose, refetchMovies }) => {
+const ModalForm = ({ show, handleClose, genres }) => {
     const [validated, setValidated] = useState(false);
     const [movie, setMovie] = useState({
         title: "",
@@ -32,22 +34,24 @@ const ModalForm = ({ show, handleClose, refetchMovies }) => {
                     body: JSON.stringify(movie),
                 });
 
-                if(response.ok) { 
-                    console.log("Movie added successfully!");
-                    refetchMovies();
+                if(response.ok) {
+                    toast.success("Movie added successfully!");
+                    // refetchMovies();
                     handleClose();
+                    setValidated(false);
                 } else {
-                    console.log("Failed to add movie!", response.statusText);
+                    toast.error("Failed to add movie!", response.statusText);
                 }
 
                 setMovie({
                     title: "",
                     releaseDate: "",
                     duration: "",
-                    genreId: 1,
+                    genreId: "",
+                    posterPath: ""
                 });
             } catch (error) {
-                console.log('Error submitting data', error);
+                toast.error('Error submitting data', error);
             }            
         }
         setValidated(true);
@@ -121,14 +125,25 @@ const ModalForm = ({ show, handleClose, refetchMovies }) => {
                         <Col>
                             <Form.Group as={Col} md="12" controlId="validationCustom02">
                                 <Form.Label>Genre</Form.Label>
-                                <Form.Control
+                                {/* <Form.Control
                                     type="number"
                                     name="genreId"
                                     placeholder="Enter Genre"
                                     min='0'
                                     onChange={handleChange}
                                     required
-                                />
+                                /> */}
+                                <Form.Select 
+                                    name="genreId"
+                                    aria-label={`Genre`}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option>Genre</option>
+                                    {genres.map((genre) => (
+                                        <option key={genre.id} value={genre.id}>{genre.name}</option>
+                                    ))}
+                                </Form.Select>
                                 <Form.Control.Feedback type="invalid">
                                     Please add a genre
                                 </Form.Control.Feedback>

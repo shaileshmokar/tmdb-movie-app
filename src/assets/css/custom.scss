@@ -22,5 +22,7 @@ $danger: var(--bs-danger);
 $light: var(--bs-light);
 $dark: var(--bs-dark);
 
+$font-family-base: 'Roboto', sans-serif;
+
 // Import Bootstrap styles to apply the customizations
 @import "node_modules/bootstrap/scss/bootstrap";

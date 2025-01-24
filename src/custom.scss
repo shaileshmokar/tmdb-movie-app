@@ -1,0 +1,58 @@
+// Import Bootstrap functions and variables
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+
+:root {
+    --bs-primary: #ff7f50;
+    --bs-secondary: #ff7f50;
+    --bs-success: #28a745;
+    --bs-info: #17a2b8;
+    --bs-warning: #ffc107;
+    --bs-danger: #dc3545;
+    --bs-light: #f8f9fa;
+    --bs-dark: #343a40;
+}
+
+$theme-colors: (
+  'info': #20c997,
+  'danger': #dc3545,
+  'warning': #ff69b4,
+  'success': #8bc34a,
+  'primary': #0b3150,
+  'secondary': #6d757d,
+);
+//   'primary': #ff7f50,
+
+/* import bootstrap to set changes */
+$primary: var(--bs-primary);
+$secondary: var(--bs-secondary);
+$success: var(--bs-success);
+$info: var(--bs-info);
+$warning: var(--bs-warning);
+$danger: var(--bs-danger);
+$light: var(--bs-light);
+$dark: var(--bs-dark);
+
+$font-family-base: 'Roboto', sans-serif;
+.btn-primary {
+    background-color: #FF5733;
+}
+
+$colors: (
+  "blue":       $blue,
+  "indigo":     $indigo,
+  "purple":     $purple,
+  "pink":       $pink,
+  "red":        $red,
+  "orange":     $orange,
+  "yellow":     $yellow,
+  "green":      $green,
+  "teal":       $teal,
+  "cyan":       $cyan,
+  "white":      $white,
+  "gray":       $gray-600,
+  "gray-dark":  $gray-800
+);
+
+// Import Bootstrap styles to apply the customizations
+@import "node_modules/bootstrap/scss/bootstrap";

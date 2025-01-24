@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-const ModalForm = ({ show, handleClose, genres }) => {
+const ModalForm = ({ show, handleClose }) => {
     const [validated, setValidated] = useState(false);
+    const [genres, setGenres] = useState([]);
     const [movie, setMovie] = useState({
         title: "",
         releaseDate: "",
@@ -56,6 +57,21 @@ const ModalForm = ({ show, handleClose, genres }) => {
         }
         setValidated(true);
     };
+
+    useEffect(() => {
+        const fetchGenres = async () => {
+            try {
+                const response = await fetch('http://localhost:5037/api/genres');
+                const data = await response.json();
+                setGenres(data.genres || []);
+            } catch (error) {
+                console.error("Error fetching genres:", error);
+                toast.error("Failed to load genres");
+            }
+        };
+
+        fetchGenres();
+    }, []);
 
     return (
         <Modal size="lg" show={show} onHide={handleClose}>

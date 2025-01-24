@@ -1,12 +1,15 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthProvider';
 import { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Placeholder, Button, Form } from 'react-bootstrap';
 import { Edit, Trash2, ChevronLeft } from 'lucide-react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
+import CarouselMovieCardPlaceholder from './cards/CarouselMovieCardPlaceholder';
 
 const MovieDetails = () => {
+    const { user } = useAuth();
     const { id } = useParams();
     const [movie, setMovie] = useState(null);
     const [genres, setGenres] = useState([]);
@@ -57,10 +60,12 @@ const MovieDetails = () => {
             });
 
             if (response.ok) {
+                console.log(response);
                 toast.success(`Movie updated successfully!`);
                 setIsEditing(false);
             } else {
-                toast.error('Failed to update movie');
+                toast.error(response.statusText);
+                // toast.error('Failed to update movie');
             }
         } catch (error) {
             toast.error('Error updating movie');
@@ -120,27 +125,41 @@ const MovieDetails = () => {
                     <Col md={4}>
                         <Card.Img
                             variant="top"
-                            src="https://placehold.co/100x150"
+                            src="https://placehold.co/100x150?text=Movie\nImage"
                             alt="Placeholder"
                             animation="wave"
                             // width="400"
                             // height="550"
                             width="100%"
                             height="100%"
-                            className="border border-1"
+                            className="rounded-3 border border-1"
                         />
+                        {/* <CarouselMovieCardPlaceholder width={'500px'} height={'1000px'} /> */}
                     </Col>
                     <Col md={8}>
                         <Card.Body>
                             <Placeholder className="fs-3 fw-bold" as={Card.Title} animation="glow">
                                 <Placeholder xs={6} />
                             </Placeholder>
-                            <Placeholder as={Card.Text} animation="glow">
-                                <Placeholder xs={7} /> <Placeholder xs={4} /> <Placeholder xs={4} />{' '}
-                                <Placeholder xs={6} /> <Placeholder xs={8} />
+                            <Placeholder as={Card.Title} animation="glow" >
+                                <Placeholder xs={3} /> <br/>
+                                <Placeholder xs={4} /> <br/>
+                                <Placeholder xs={3} /> <br/>
+                                <Placeholder xs={12} /> <br/>
+                                <Placeholder xs={12} /> <br/>
+                                <Placeholder xs={12} /> <br/>
+                                <Placeholder xs={12} /> <br/>
+                                <Placeholder xs={12} /> <br/>
+                                <Placeholder xs={12} /> <br/>
+                                <Placeholder xs={12} /> <br/>
+                                <Placeholder xs={12} /> 
+                                <Placeholder xs={12} /> 
+                                <Placeholder xs={12} />{' '}
+                                <Placeholder xs={12} /> 
+                                <Placeholder xs={12} />
                             </Placeholder>
                         </Card.Body>
-                        <Placeholder.Button variant="primary" xs={1} />
+                        <Placeholder.Button variant="primary" xs={1}/>
                         <Placeholder.Button variant="danger" xs={1} />
                     </Col>
                 </Row>
@@ -155,8 +174,9 @@ const MovieDetails = () => {
                             // height="550"
                             width="100%"
                             height="100%"
-                            style={{ objectFit: 'cover' }}
-                            className="border border-1"
+                            //style={{ objectFit: 'cover' }}
+                            rounded="true"
+                            className="rounded-3 border border-1"
                         />
                     </Col>
                     <Col md={8}>
@@ -195,8 +215,35 @@ const MovieDetails = () => {
                                     <Form.Label>Release Date</Form.Label>
                                     <Form.Control
                                         type="date"
-                                        value={movie.releaseDate}
-                                        onChange={(e) => setMovie({ ...movie, releaseDate: e.target.value })}
+                                        // value={movie.releaseDate}
+                                        // onChange={(e) => {
+                                        //     const selectedDate = new Date(e.target.value).toLocaleDateString('en-US', {
+                                        //         month: 'short',
+                                        //         day: '2-digit',
+                                        //         year: 'numeric',
+                                        //     });
+                                        //     setMovie({ ...movie, releaseDate: selectedDate });
+                                        // }}
+                                        value={new Date(movie.releaseDate).toISOString().slice(0, 10)}
+                                        // onChange={(e) => setMovie({ ...movie, releaseDate: e.target.value })}
+                                        // onChange={(e) => {
+                                        //     const date = new Date(e.target.value);
+                                        //     console.log('on change release date', date);
+
+                                        //     const formattedDate = date.toLocaleDateString('en-US', {
+                                        //         month: 'short',
+                                        //         day: '2-digit',
+                                        //         year: 'numeric',
+                                        //     });
+                                        //     setMovie({ ...movie, releaseDate: formattedDate });
+                                        // }}
+                                        onChange={(e) => {
+                                            const inputDate = new Date(e.target.value);
+                                            const formattedDate = inputDate.toDateString().split(' ');
+                                            const customFormattedDate = `${formattedDate[1]} ${formattedDate[2]}, ${formattedDate[3]}`;
+                                            console.log('on change release date', customFormattedDate);
+                                            setMovie({ ...movie, releaseDate: customFormattedDate });
+                                        }}
                                     />
                                 </Form.Group>
                                 <Form.Group controlId="formDuration" className="mb-3">
@@ -239,23 +286,28 @@ const MovieDetails = () => {
                             height="100%"
                             // style={{ objectFit: 'cover' }}
                             rounded="true"
-                            className="border border-1"
+                            className="rounded-3 border border-1"
                         />
                     </Col>
                     <Col md={8}>
                         <Card.Body>
                             <Card.Title className="fs-1 fw-bold">{movie.title}</Card.Title>
                             <Card.Text className="fs-4 fw-lighter">
-                                Genre: { movie.genre?.name } <br/>
-                                Release On: { movie.releaseDate} <br/>
-                                Duration: { movie.duration } Mins
+                                Genre: <span class="fs-5 fw-lighter">{ movie.genre?.name }</span> <br/>
+                                Release On: <span class="fs-5 fw-lighter">{ movie.releaseDate}</span> <br/>
+                                Duration: <span class="fs-5 fw-lighter">{ movie.duration}  Mins</span> <br/>
+                                Description: <span class="fs-5 fw-lighter">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis reprehenderit, sed dolorum soluta adipisci quod doloremque delectus eum asperiores, illum ea ab cupiditate dolore vitae voluptatibus quae neque. Ipsam, deserunt. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officiis reprehenderit, sed dolorum soluta adipisci quod doloremque delectus eum asperiores, illum ea ab cupiditate dolore vitae voluptatibus quae neque. Ipsam, deserunt. Officiis reprehenderit, sed dolorum soluta adipisci quod doloremque delectus eum asperiores, illum ea ab cupiditate dolore vitae voluptatibus quae neque. Ipsam, deserunt.</span>
                             </Card.Text>
-                            <Button variant="primary" onClick={ () => handleEdit(movie.id) }>
-                                <Edit size={16} className="me-2" />Edit
-                            </Button>
-                            <Button variant="danger" className="ms-2" onClick={ () => handleDeleteClick(movie.id) }>
-                                <Trash2 size={16} className="me-2" /> Delete
-                            </Button>
+                            {user && (
+                                <>
+                                    <Button variant="primary" onClick={() => handleEdit(movie.id)}>
+                                        <Edit size={16} className="me-2" /> Edit
+                                    </Button>
+                                    <Button variant="danger" className="ms-2" onClick={() => handleDeleteClick(movie.id)}>
+                                        <Trash2 size={16} className="me-2" /> Delete
+                                    </Button>
+                                </>
+                            )}
                         </Card.Body>
                     </Col>
                 </Row>
